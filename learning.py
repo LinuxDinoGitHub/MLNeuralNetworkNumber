@@ -13,8 +13,6 @@ def create_data_set(points, classes):
         y[ix] = j
     return X, y
 
-X, y = create_data_set(100,3)
-
 class Layer:
     def __init__(self, n_inputs, n_neurons): #4 inputs by 3 
         self.weights = 0.1*np.random.randn(n_inputs, n_neurons) #3 by 4 matrix
@@ -26,10 +24,23 @@ class Activation_ReLU:
     def forward(self, inputs):
         self.output = np.maximum(0,inputs)
 
-layer1 = Layer(2,5)
+class Activation_softMax:
+    def forward(self, inputs):
+        exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
+        probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
+        self.output = probabilities
+
+X, y = create_data_set(100,3)
+
+layer1 = Layer(2,3)
 activation1 = Activation_ReLU()
+layer2 = Layer(3,4)
+activation2 = Activation_softMax()
 
 layer1.forward(X)
-print(layer1.output)
 activation1.forward(layer1.output)
-print(activation1.output)
+
+layer2.forward(activation1.output)
+activation2.forward(layer2.output)
+
+print(activation2.output[:5])
