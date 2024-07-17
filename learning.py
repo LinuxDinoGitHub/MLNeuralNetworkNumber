@@ -46,6 +46,10 @@ class Loss_CategoricalCrossEntropy(Loss):
         negative_log_likelihoods = -np.log(correct_confidences)
         return negative_log_likelihoods
 
+class BackPropagation:
+    def backwards(self):
+        pass
+
 X, y = create_data_set(100,3)
 
 layer1 = Layer(2,3)
