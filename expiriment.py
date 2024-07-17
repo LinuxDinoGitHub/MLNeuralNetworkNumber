@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+np.random.seed(69)
 data = pd.read_csv('./mnist_train.csv/mnist_train.csv')
 
 data.head()
@@ -28,7 +29,8 @@ def init_params():
 def ReLU(Z):
     return np.maximum(0, Z)
 def softMax(Z):
-    return np.exp(Z) / np.sum(np.exp(Z))
+    A = np.exp(Z) / sum(np.exp(Z))
+    return A
 def forward(W1, b1, W2, b2, X):
     Z1 = W1.dot(X) + b1
     A1 = ReLU(Z1)
@@ -54,10 +56,10 @@ def back_prop(Z1, A1, Z2, A2, W2, X, Y):
     return dW1, db1, dW2, db2
 
 def update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha):
-    W1 = W1 - alpha * dW1
-    b1 = b1 - alpha * db1
-    W2 = W2 - alpha * dW2
-    b2 = b2 - alpha * db2
+    W1 = W1 - (alpha * dW1)
+    b1 = b1 - (alpha * db1)
+    W2 = W2 - (alpha * dW2)
+    b2 = b2 - (alpha * db2)
     return W1, b1, W2, b2
 
 def get_predictions(A2):
@@ -69,13 +71,14 @@ def get_accuracy(predictions, Y):
 
 def gradient_descent(X, Y, iterations, alpha):
     W1, b1, W2, b2 = init_params()
-    for i in range(iterations):
+    for i in range(iterations+1):
         Z1, A1, Z2, A2 = forward(W1, b1, W2, b2, X)
         dW1, db1, dW2, db2 = back_prop(Z1, A1, Z2, A2, W2, X, Y)
         W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
         if i%10 == 0:
             print('Iteration: ', i)
-            print('Accuracy: ', get_accuracy(get_predictions(A2), Y))
+            accuracy = get_accuracy(get_predictions(A2), Y) *100
+            print(f'Accuracy: {accuracy}%')
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 100, 5000)
+W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 200, 0.69)
